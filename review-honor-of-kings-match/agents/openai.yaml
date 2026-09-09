@@ -1,0 +1,4 @@
+interface:
+  display_name: "王者荣耀对局复盘"
+  short_description: "基于回放录像生成证据化的王者荣耀整局复盘与训练建议"
+  default_prompt: "使用 $review-honor-of-kings-match 分析我的王者荣耀回放；请先询问录像倍速、游玩英雄和分路，再给出分项评分与改进建议。"
