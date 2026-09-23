@@ -1,6 +1,6 @@
 ---
 name: review-honor-of-kings-match
-description: Analyze Honor of Kings (王者荣耀) full-match replays or gameplay recordings with user-supplied context, producing evidence-linked reviews of team composition, laning, farming and rotations, neutral-objective control, deaths, teamfights, macro decisions, and key turning points, plus dimension scores and actionable training advice. Use when a user provides or references a 王者荣耀 replay/video/clip and asks for 复盘、录像分析、对局诊断、死亡分析、团战分析、阵容分析、评分、上分建议, or wants to understand why a match was won or lost. Support focal-player, full-team, and partial-evidence reviews.
+description: Analyze Honor of Kings (王者荣耀) full-match replays or gameplay recordings with user-supplied context, producing evidence-linked reviews of team composition, team-wide composition-pick optimization, laning, farming and rotations, neutral-objective control, deaths, teamfights, macro decisions, and key turning points, plus dimension scores, actionable training advice, and a lane-specific personal battle-style profile updated after each completed new-video review. Use when a user provides or references a 王者荣耀 replay/video/clip and asks for 复盘、录像分析、对局诊断、死亡分析、团战分析、阵容分析、阵容优化、英雄选择、评分、上分建议、战斗风格、长期成长跟踪, or wants to understand why a match was won or lost. Support focal-player, full-team, and partial-evidence reviews.
 ---
 
 # 王者荣耀对局复盘
@@ -15,6 +15,8 @@ description: Analyze Honor of Kings (王者荣耀) full-match replays or gamepla
 - 对看不清的经济、技能冷却、装备、信号或沟通标记为“未知”，不得补造精确数据。
 - 避免结果论。分别评价决策质量、执行质量和结果；失败的正确决策与成功的冒险决策不能只按结果评分。
 - 把个人责任与团队责任拆开。只把当时该玩家可观察、可控制的部分计入个人评分。
+- 把阵容选择优化与个人表现评分拆开。阵容反事实可以调整任一位置，但未知 BP 顺序、禁用位、英雄池或沟通时，不得据此认定某位玩家“选错”或扣个人分。
+- 把单局表现与长期风格拆开，并按分路维护长期画像。先独立完成本局取证和结论，再只对照相同分路档案；其他分路标签不能代替本局证据。
 - 把英雄数值、装备、野怪名称、刷新时间、地图机制和版本强度视为版本敏感信息。需要据此下结论时，先确认对局日期/版本并用可用的最新可靠来源核验；无法核验时明确使用条件式表述。
 
 ## 确认复盘对象
@@ -74,7 +76,7 @@ python3 scripts/extract_replay_evidence.py match.mp4 --output evidence \
 - 用户纠正后，更新所有受影响槽位，再展示完整确认卡并等待用户确认。只有用户明确表示阵容正确后，才将状态记为 `已确认` 并继续后续分析。
 - 阵容处于 `待确认` 时，不得输出阵容优劣、职业构成、伤害结构、对位克制、胜负条件、相关评分或完整复盘，也不要用条件式分支绕过确认关卡。
 
-### 3. 建立对局基线并分析阵容
+### 3. 建立对局基线，分析并优化阵容选择
 
 仅在阵容状态为 `已确认` 后开始阵容分析。完整报告必须包含独立的“双方阵容分析结论”章节，不能只复述英雄名单，也不能把阵容分析压缩进一两句团战说明。
 
@@ -84,10 +86,13 @@ python3 scripts/extract_replay_evidence.py match.mp4 --output evidence \
 - 双方在阵地战、河道窄口、开放区域、遭遇战和分带中的相对优劣；
 - 各自胜利条件、应避免的战斗形态、关键窗口、关键对位和资源优先级；
 - 一段明确的总体对阵结论，说明哪一方希望怎样打，以及原因；
+- 一段全队阵容选择优化分析：先说明当前阵容应保留的优势与最重要的结构缺口，再扫描五个位置的适配度；至少给出一套最小改动方案和一套结构调整方案，并说明每种调整解决什么、牺牲什么、适用于什么条件；
 - 评分主体的职责、安全站位、理想入场条件和禁区；
 - 至少两个本局时间戳，验证阵容理论如何在实战中兑现或失效。
 
-若录像不足以验证某个阵容判断，将其标为理论推断并降低置信度，但不能省略上述阵容分析结构。简版报告也必须保留总体对阵结论、评分主体职责和至少一条实战证据。
+阵容选择优化不得只围绕用户当前英雄，也不得机械地逐个换掉五人。优先保留已有强点，按影响与改动成本排序；每个具体英雄替换都要同时给出新的协同收益与代价。若现阵容无需替换，允许结论为“保留五人”，但必须说明理由，并给出选人顺序、备选功能位或阵容使用条件方面的优化。
+
+若录像不足以验证某个阵容判断，将其标为理论推断并降低置信度，但不能省略上述阵容分析结构。简版报告也必须保留总体对阵结论、全队阵容选择优化结论、评分主体职责和至少一条实战证据。
 
 阵容分析评价的是“理解与执行阵容条件”，而不是仅评价选出的英雄强不强。
 
@@ -104,6 +109,7 @@ python3 scripts/extract_replay_evidence.py match.mp4 --output evidence \
 分析和评分前完整阅读 [references/analysis-and-scoring.md](references/analysis-and-scoring.md)。必须覆盖：
 
 - 阵容与胜利条件；
+- 全队阵容选择优化、替换收益、代价与适用条件；
 - 对线、补经济、回城、换血、支援和转线；
 - 中立资源、兵线优先权、区域占位和资源置换；
 - 每次死亡的近因、根因、可避免度与机会成本；
@@ -120,13 +126,25 @@ python3 scripts/extract_replay_evidence.py match.mp4 --output evidence \
 - **理由**：解决本局哪个重复问题；
 - **成功指标**：下一局如何判断做到了。
 
-优先给 3 个最高杠杆改进项，再给训练法与下一局检查清单。建议必须能追溯到至少一个录像证据；通用技巧需标为补充而非本局结论。
+优先给 3 个最高杠杆改进项，将动作、训练法和成功指标合并为一张下一局检查表，避免重复列清单。建议必须能追溯到至少一个录像证据；通用技巧需标为补充而非本局结论。
 
 ### 7. 输出复盘报告
 
-完整阅读 [references/report-template.md](references/report-template.md)，按其结构输出。默认使用用户的语言，中文请求使用简体中文。保持时间戳可点击或易定位，例如 `游戏 08:42（视频 09:17）`。
+完整阅读 [references/report-template.md](references/report-template.md)，按其结构及去重规则输出。关键团战、资源与转折点合并到按时间排列的关键事件分析；同一事件只完整展开一次，其余模块保留专属判断与带时间戳的引用。默认使用用户的语言，中文请求使用简体中文。保持时间戳可点击或易定位，例如 `游戏 08:42（视频 09:17）`。
 
-若用户要求简版，仍保留：结论摘要、双方阵容分析结论、评分主体阵容职责、至少一条阵容实战证据、关键时间线、七维评分、前三改进项和证据限制。
+若用户要求简版，仍保留：结论摘要、双方阵容分析结论、至少一套全队阵容选择优化方案、评分主体阵容职责、至少一条阵容实战证据、按时间排列的关键事件、七维评分、前三改进项和证据限制。
+
+### 8. 更新个人战斗风格档案
+
+完整阅读 [references/player-profile-protocol.md](references/player-profile-protocol.md)，并在本次完整新视频复盘已经形成结论后更新 [player-profile.md](player-profile.md)。档案更新是完整复盘的交付门槛，不是可选附录。
+
+- 先用本局证据形成单局结论，再读取并对照档案，避免历史印象污染当前评分。
+- 以源视频为单位去重。同一录像的重新分析、阵容纠错或证据补充只修订原样本，不得重复增加样本数。
+- 新增样本台账，只更新用户确认的主分路画像及该分路内的英雄统计、行为模式证据、置信度、训练优先级和变更记录。
+- 对抗路、打野、中路、发育路、游走分别累计样本和置信度，不得把不同分路直接合并为一个总体风格。只有满足协议门槛时，才在独立章节提炼跨分路共性。
+- 单局出现的行为只能标为 `暂定`；不得用一次胜负或一个英雄给玩家定型。支持与反例并列保留。
+- 片段、低证据复盘或尚未通过阵容确认关卡的录像可以登记，但不得提升长期风格结论的置信度。
+- 报告末尾输出“个人战斗风格档案更新摘要”，说明本次新增、强化、弱化或推翻了哪些假设，并给出档案路径。
 
 ## 完成前质检
 
@@ -137,6 +155,9 @@ python3 scripts/extract_replay_evidence.py match.mp4 --output evidence \
 - 若用户纠正了英雄，确认已同步更新阵容、对位、胜负条件、团战职责、评分与建议。
 - 确认报告有独立的“双方阵容分析结论”，而非只有英雄名单或职责摘要。
 - 确认双方能力对照、总体对阵结论、评分主体职责均已输出，并以至少两个本局时间戳连接阵容理论与实战。
+- 确认阵容选择优化从全队五个位置扫描，而非只讨论用户英雄；说明了现阵容优势、结构缺口、保留核心、调整优先级、收益、代价与条件。
+- 确认至少给出最小改动和结构调整两类方案；若建议保留五人，则给出了充分理由和非换人优化。
+- 确认具体英雄推荐与对局版本相符；版本或 BP 信息未知时，优先写功能需求并明确限制，没有把反事实优化计入个人评分。
 - 上述阵容分析产物任一缺失时，报告视为未完成；补齐后才能输出最终评分与结论。
 - 确认每个低分项至少有一条具体证据，高影响结论尽量有两条互相支持的证据。
 - 确认每次死亡都分析死亡前决策，而非只描述死亡瞬间。
@@ -144,4 +165,9 @@ python3 scripts/extract_replay_evidence.py match.mp4 --output evidence \
 - 确认团战分析覆盖“战前—战中—战后”，并拆分决策与执行。
 - 确认转折点具有可行的反事实方案，而非事后要求玩家使用当时未知的信息。
 - 确认各维度评分使用同一量表，`N/A` 不计入总分，并显示评分置信度。
+- 确认同一事件没有跨章节重复展开，建议与指标在改进计划中统一定义，引用均可定位到编号与时间戳。
 - 确认建议具体、可练、可衡量，且没有把队友不可控行为算作个人改进项。
+- 确认完整新视频复盘已经在 `player-profile.md` 中去重登记；同一视频重分析没有重复计数。
+- 确认先完成本局独立判断、后对照历史档案；没有把历史风格标签当作本局事实。
+- 确认档案中的模式同时记录支持证据、反例、适用英雄/分路、样本数和置信度，且报告包含更新摘要。
+- 确认本局只进入一个已确认的主分路画像；其他分路的样本没有参与该分路置信度计算。
