@@ -1,0 +1,4 @@
+interface:
+  display_name: "照片质量分析与提升"
+  short_description: "分析照片拍摄质量，提供完整文字点评、改进建议及对应的照片标注图"
+  default_prompt: "使用 $critique-photo 分析这张照片的拍摄质量，输出完整文字点评和带标注的图片，并给出按优先级排列的拍摄改进与后期建议。"
